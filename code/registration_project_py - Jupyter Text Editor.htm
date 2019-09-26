@@ -1,0 +1,203 @@
+﻿<!DOCTYPE HTML>
+<!-- saved from url=(0075)http://localhost:8888/edit/Documents/8dc00-mia/code/registration_project.py -->
+<!DOCTYPE html PUBLIC "" ""><HTML><HEAD><META content="IE=11.0000" 
+http-equiv="X-UA-Compatible">
+     
+<META charset="utf-8">     <TITLE>registration_project.py (editing)</TITLE>     
+<LINK id="favicon" href="/static/base/images/favicon-file.ico?v=e2776a7f45692c839d6eea7d7ff6f3b2" 
+rel="shortcut icon" type="image/x-icon">     
+<META http-equiv="X-UA-Compatible" content="IE=edge">     <LINK href="registration_project_py%20-%20Jupyter%20Text%20Editor_files/jquery-ui.min.css" 
+rel="stylesheet" type="text/css">     <LINK href="registration_project_py%20-%20Jupyter%20Text%20Editor_files/jquery.typeahead.min.css" 
+rel="stylesheet" type="text/css">     
+<META name="viewport" content="width=device-width, initial-scale=1.0">         
+<LINK href="registration_project_py%20-%20Jupyter%20Text%20Editor_files/codemirror.css" 
+rel="stylesheet"> <LINK href="registration_project_py%20-%20Jupyter%20Text%20Editor_files/dialog.css" 
+rel="stylesheet">     <LINK href="registration_project_py%20-%20Jupyter%20Text%20Editor_files/style.min.css" 
+rel="stylesheet" type="text/css">         <LINK href="/custom/custom.css" rel="stylesheet" 
+type="text/css">     
+<SCRIPT src="registration_project_py%20-%20Jupyter%20Text%20Editor_files/promise.min.js" type="text/javascript" charset="utf-8"></SCRIPT>
+     
+<SCRIPT src="registration_project_py%20-%20Jupyter%20Text%20Editor_files/react.production.min.js" type="text/javascript"></SCRIPT>
+     
+<SCRIPT src="" type="text/javascript"></SCRIPT>
+     
+<SCRIPT src="registration_project_py%20-%20Jupyter%20Text%20Editor_files/index.js" type="text/javascript"></SCRIPT>
+     
+<SCRIPT src="registration_project_py%20-%20Jupyter%20Text%20Editor_files/require.js" type="text/javascript" charset="utf-8"></SCRIPT>
+     
+<SCRIPT>
+      require.config({
+          
+          urlArgs: "v=20190919092231",
+          
+          baseUrl: '/static/',
+          paths: {
+            'auth/js/main': 'auth/js/main.min',
+            custom : '/custom',
+            nbextensions : '/nbextensions',
+            kernelspecs : '/kernelspecs',
+            underscore : 'components/underscore/underscore-min',
+            backbone : 'components/backbone/backbone-min',
+            jed: 'components/jed/jed',
+            jquery: 'components/jquery/jquery.min',
+            json: 'components/requirejs-plugins/src/json',
+            text: 'components/requirejs-text/text',
+            bootstrap: 'components/bootstrap/dist/js/bootstrap.min',
+            bootstraptour: 'components/bootstrap-tour/build/js/bootstrap-tour.min',
+            'jquery-ui': 'components/jquery-ui/jquery-ui.min',
+            moment: 'components/moment/min/moment-with-locales',
+            codemirror: 'components/codemirror',
+            termjs: 'components/xterm.js/xterm',
+            typeahead: 'components/jquery-typeahead/dist/jquery.typeahead.min',
+          },
+          map: { // for backward compatibility
+              "*": {
+                  "jqueryui": "jquery-ui",
+              }
+          },
+          shim: {
+            typeahead: {
+              deps: ["jquery"],
+              exports: "typeahead"
+            },
+            underscore: {
+              exports: '_'
+            },
+            backbone: {
+              deps: ["underscore", "jquery"],
+              exports: "Backbone"
+            },
+            bootstrap: {
+              deps: ["jquery"],
+              exports: "bootstrap"
+            },
+            bootstraptour: {
+              deps: ["bootstrap"],
+              exports: "Tour"
+            },
+            "jquery-ui": {
+              deps: ["jquery"],
+              exports: "$"
+            }
+          },
+          waitSeconds: 30,
+      });
+
+      require.config({
+          map: {
+              '*':{
+                'contents': 'services/contents',
+              }
+          }
+      });
+
+      // error-catching custom.js shim.
+      define("custom", function (require, exports, module) {
+          try {
+              var custom = require('custom/custom');
+              console.debug('loaded custom.js');
+              return custom;
+          } catch (e) {
+              console.error("error loading custom.js", e);
+              return {};
+          }
+      })
+
+    document.nbjs_translations = {"domain": "nbjs", "locale_data": {"nbjs": {"": {"domain": "nbjs"}}}};
+    document.documentElement.lang = navigator.language.toLowerCase();
+    </SCRIPT>
+         
+<META name="GENERATOR" content="MSHTML 11.00.10570.1001"></HEAD> 
+<BODY class="edit_app " dir="ltr" data-jupyter-api-token="d8a1cec8d9d189945743717cdb8c83d986d131da753d9ab3" 
+data-file-path="Documents/8dc00-mia/code/registration_project.py" data-base-url="/"><NOSCRIPT> 
+   &lt;div id='noscript'&gt;      Jupyter Notebook requires 
+JavaScript.&lt;br&gt;      Please enable it to proceed.   &lt;/div&gt; 
+</NOSCRIPT> 
+<DIV id="header" role="navigation" aria-label="Top Menu">
+<DIV class="container" id="header-container">
+<DIV class="nav navbar-brand" id="ipython_notebook"><A title="dashboard" href="http://localhost:8888/tree?token=d8a1cec8d9d189945743717cdb8c83d986d131da753d9ab3"><IMG 
+alt="Jupyter Notebook" src="registration_project_py%20-%20Jupyter%20Text%20Editor_files/logo.png"> 
+  </A></DIV><SPAN class="pull-left save_widget" id="save_widget"><SPAN class="filename"></SPAN> 
+    <SPAN class="last_modified"></SPAN> </SPAN>               <SPAN id="login_widget"><BUTTON 
+class="btn btn-sm navbar-btn" id="logout">Logout</BUTTON>           </SPAN>      
+   </DIV>
+<DIV class="header-bar"></DIV>
+<DIV class="container" id="menubar-container">
+<DIV id="menubar">
+<DIV class="navbar navbar-default" id="menus" role="navigation">
+<DIV class="container-fluid">
+<P class="navbar-text indicator_area"><SPAN id="current-mode">current 
+mode</SPAN>           </P><BUTTON class="btn btn-default navbar-toggle" type="button" 
+data-toggle="collapse" data-target=".navbar-collapse"><I class="fa fa-bars"></I> 
+          <SPAN class="navbar-text">Menu</SPAN>         </BUTTON>         
+<UL class="nav navbar-nav navbar-right">
+  <LI id="notification_area"></LI></UL>
+<DIV class="navbar-collapse collapse">
+<UL class="nav navbar-nav">
+  <LI class="dropdown"><A class="dropdown-toggle" href="http://localhost:8888/edit/Documents/8dc00-mia/code/registration_project.py#" 
+  data-toggle="dropdown">File</A>
+  <UL class="dropdown-menu" id="file-menu">
+    <LI id="new-file"><A href="http://localhost:8888/edit/Documents/8dc00-mia/code/registration_project.py#">New</A></LI>
+    <LI id="save-file"><A href="http://localhost:8888/edit/Documents/8dc00-mia/code/registration_project.py#">Save</A></LI>
+    <LI id="rename-file"><A href="http://localhost:8888/edit/Documents/8dc00-mia/code/registration_project.py#">Rename</A></LI>
+    <LI id="download-file"><A href="http://localhost:8888/edit/Documents/8dc00-mia/code/registration_project.py#">Download</A></LI></UL></LI>
+  <LI class="dropdown"><A class="dropdown-toggle" href="http://localhost:8888/edit/Documents/8dc00-mia/code/registration_project.py#" 
+  data-toggle="dropdown">Edit</A>
+  <UL class="dropdown-menu" id="edit-menu">
+    <LI id="menu-find"><A href="http://localhost:8888/edit/Documents/8dc00-mia/code/registration_project.py#">Find</A></LI>
+    <LI id="menu-replace"><A href="http://localhost:8888/edit/Documents/8dc00-mia/code/registration_project.py#">Find 
+    &amp; Replace</A></LI>
+    <LI class="divider"></LI>
+    <LI class="dropdown-header">Key Map</LI>
+    <LI id="menu-keymap-default"><A href="http://localhost:8888/edit/Documents/8dc00-mia/code/registration_project.py#">Default<I 
+    class="fa"></I></A></LI>
+    <LI id="menu-keymap-sublime"><A href="http://localhost:8888/edit/Documents/8dc00-mia/code/registration_project.py#">Sublime 
+    Text<I class="fa"></I></A></LI>
+    <LI id="menu-keymap-vim"><A href="http://localhost:8888/edit/Documents/8dc00-mia/code/registration_project.py#">Vim<I 
+    class="fa"></I></A></LI>
+    <LI id="menu-keymap-emacs"><A href="http://localhost:8888/edit/Documents/8dc00-mia/code/registration_project.py#">emacs<I 
+    class="fa"></I></A></LI></UL></LI>
+  <LI class="dropdown"><A class="dropdown-toggle" href="http://localhost:8888/edit/Documents/8dc00-mia/code/registration_project.py#" 
+  data-toggle="dropdown">View</A>
+  <UL class="dropdown-menu" id="view-menu">
+    <LI title="Show/Hide the logo and notebook title (above menu bar)" id="toggle_header"><A 
+    href="http://localhost:8888/edit/Documents/8dc00-mia/code/registration_project.py#">Toggle 
+    Header</A></LI>
+    <LI id="menu-line-numbers"><A href="http://localhost:8888/edit/Documents/8dc00-mia/code/registration_project.py#">Toggle 
+    Line Numbers</A></LI></UL></LI>
+  <LI class="dropdown"><A class="dropdown-toggle" href="http://localhost:8888/edit/Documents/8dc00-mia/code/registration_project.py#" 
+  data-toggle="dropdown">Language</A>
+  <UL class="dropdown-menu" 
+id="mode-menu"></UL></LI></UL></DIV></DIV></DIV></DIV></DIV>
+<DIV class="lower-header-bar"></DIV></DIV>
+<DIV id="site">
+<DIV id="texteditor-backdrop">
+<DIV class="container" id="texteditor-container"></DIV></DIV></DIV>
+<SCRIPT src="registration_project_py%20-%20Jupyter%20Text%20Editor_files/main.min.js" type="text/javascript" charset="utf-8"></SCRIPT>
+ 
+<SCRIPT type="text/javascript">
+  function _remove_token_from_url() {
+    if (window.location.search.length <= 1) {
+      return;
+    }
+    var search_parameters = window.location.search.slice(1).split('&');
+    for (var i = 0; i < search_parameters.length; i++) {
+      if (search_parameters[i].split('=')[0] === 'token') {
+        // remote token from search parameters
+        search_parameters.splice(i, 1);
+        var new_search = '';
+        if (search_parameters.length) {
+          new_search = '?' + search_parameters.join('&');
+        }
+        var new_url = window.location.origin + 
+                      window.location.pathname + 
+                      new_search + 
+                      window.location.hash;
+        window.history.replaceState({}, "", new_url);
+        return;
+      }
+    }
+  }
+  _remove_token_from_url();
+</SCRIPT>
+ </BODY></HTML>

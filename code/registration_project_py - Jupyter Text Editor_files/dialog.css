@@ -1,0 +1,15 @@
+.CodeMirror-dialog {
+	background: inherit; padding: 0.1em 0.8em; left: 0px; right: 0px; color: inherit; overflow: hidden; position: absolute; z-index: 15;
+}
+.CodeMirror-dialog-top {
+	top: 0px; border-bottom-color: rgb(238, 238, 238); border-bottom-width: 1px; border-bottom-style: solid;
+}
+.CodeMirror-dialog-bottom {
+	bottom: 0px; border-top-color: rgb(238, 238, 238); border-top-width: 1px; border-top-style: solid;
+}
+.CodeMirror-dialog input {
+	background: none; border: currentColor; border-image: none; width: 20em; color: inherit; font-family: monospace;
+}
+.CodeMirror-dialog button {
+	font-size: 70%;
+}

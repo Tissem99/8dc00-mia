@@ -4,6 +4,7 @@ Registration module main code.
 
 import numpy as np
 from scipy import ndimage
+import matplotlib.pyplot as plt
 import registration_util as util
 
 
@@ -40,9 +41,9 @@ def rotate(phi):
     # T - transformation matrix
 
     #------------------------------------------------------------------#
-    # TODO: Implement transformation matrix for rotation.
+    T = np.array([[np.cos(phi),-np.sin(phi)],[np.sin(phi),np.cos(phi)]])
     #------------------------------------------------------------------#
-
+    
     return T
 
 
@@ -55,7 +56,7 @@ def shear(cx, cy):
     # T - transformation matrix
 
     #------------------------------------------------------------------#
-    # TODO: Implement transformation matrix for shear.
+    T = np.array([[1,cx],[cy,1]])
     #------------------------------------------------------------------#
 
     return T
@@ -73,9 +74,8 @@ def reflect(rx, ry):
     if rx not in allowed or ry not in allowed:
         T = 'Invalid input parameter'
         return T
-
     #------------------------------------------------------------------#
-    # TODO: Implement transformation matrix for reflection
+    T = np.array([[rx,0], [0,ry]])
     #------------------------------------------------------------------#
 
     return T
@@ -113,7 +113,8 @@ def image_transform(I, Th,  output_shape=None):
     Xh = util.c2h(X)
 
     #------------------------------------------------------------------#
-    # TODO: Perform inverse coordinates mapping.
+    Ti = np.linalg.inv(Th)
+    Xt = Ti.dot(Xh)
     #------------------------------------------------------------------#
 
     It = ndimage.map_coordinates(I, [Xt[1,:], Xt[0,:]], order=1, mode='constant').reshape(I.shape)
@@ -131,13 +132,17 @@ def ls_solve(A, b):
     # E - squared error for the optimal solution
 
     #------------------------------------------------------------------#
-    # TODO: Implement the least-squares solution for w.
+    #At = np.matrix.transpose(A)
+    #dot = At.dot(A)
+    #w1 = np.linalg.inv(dot).dot(At)
+    #w = w1.dot(b)
+    
+    w = np.linalg.inv(A.T.dot(A)).dot(A.T).dot(b)
     #------------------------------------------------------------------#
-
     # compute the error
     E = np.transpose(A.dot(w) - b).dot(A.dot(w) - b)
 
-    return w, E
+    return w,E
 
 
 def ls_affine(X, Xm):
@@ -149,10 +154,30 @@ def ls_affine(X, Xm):
     # T - affine transformation in homogeneous form.
 
     A = np.transpose(Xm)
-
     #------------------------------------------------------------------#
     # TODO: Implement least-squares fitting of an affine transformation.
-    # Use the ls_solve() function that you have previously implemented.
+    # Use the ls_solve() function that you have previously implemented.   
+    X_transposed = X.transpose() #right side
+    #two systems of equations
+    #for x
+    wx, Ex = ls_solve(A, X_transposed[:,0].reshape(-1,1))
+    #for y
+    wy, Ey = ls_solve(A, X_transposed[:,1].reshape(-1,1))
+    #form a homogenoeous transformation matrix
+    T = np.concatenate((wx.transpose(), wy.transpose()))
+    T = np.vstack((T, np.array([0,0,1])))
+    
+    #b1 = X[0]
+    #b1 = b1.reshape(-1,1)
+    #b2 = X[1]
+    #b2 = b2.reshape(-1,1)
+    #w1 = ls_solve(A, b1)
+    #w2 = ls_solve(A, b2)
+    #print(w1)
+    #T = np.concatenate((w1.T, w2.T,np.array([[0],[0],[1]]).reshape(1,-1)), axis=0)
+    #T = np.concatenate((Substep, np.array([[0],[0],[1]])), axis=1)
+    #T = np.eye(3,3)
+    
     #------------------------------------------------------------------#
 
     return T
@@ -174,14 +199,19 @@ def correlation(I, J):
 
     u = I.reshape((I.shape[0]*I.shape[1],1))
     v = J.reshape((J.shape[0]*J.shape[1],1))
-
     # subtract the mean
     u = u - u.mean(keepdims=True)
     v = v - v.mean(keepdims=True)
-
     #------------------------------------------------------------------#
     # TODO: Implement the computation of the normalized cross-correlation.
     # This can be done with a single line of code, but you can use for-loops instead.
+    CD = 0
+    CE = 0
+    for i in range(1,len(u)):
+        CD = CD + (u[i]*v[i])
+        CE = CE + (u[i]*u[i])**0.5*(v[i]*v[i])**0.5
+    CC = CD/CE
+    
     #------------------------------------------------------------------#
 
     return CC
@@ -232,6 +262,7 @@ def joint_histogram(I, J, num_bins=16, minmax_range=None):
     # intensities in the two images. You need to implement one final
     # step to make p take the form of a probability mass function
     # (p.m.f.).
+    p = p/n
     #------------------------------------------------------------------#
 
     return p
@@ -263,6 +294,16 @@ def mutual_information(p):
     # can use a for-loop instead.
     # HINT: p_I is a column-vector and p_J is a row-vector so their
     # product is a matrix. You can also use the sum() function here.
+    
+    nzs = p>0 #only non-zero values contribute to the sum
+
+    #Method 1:
+
+    MI = np.sum((p[nzs].dot(np.log(p[nzs]/(p_I.dot(p_J))[nzs]))))
+
+    
+
+    #MI = np.sum(p.dot(np.log(p/(p_I.dot(p_J)))))
     #------------------------------------------------------------------#
 
     return MI
@@ -292,6 +333,15 @@ def mutual_information_e(p):
     #------------------------------------------------------------------#
     # TODO: Implement the computation of the mutual information via
     # computation of entropy.
+    nzs = p>0
+
+    H_I = np.sum(-p_I*(np.log(p_I)))
+
+    H_J = np.sum(-p_J*(np.log(p_J)))
+
+    H =  np.sum(-p[nzs].dot(np.log(p[nzs])))
+    MI = (H_I + H_J - H)
+    print(MI)
     #------------------------------------------------------------------#
 
     return MI
@@ -301,6 +351,7 @@ def mutual_information_e(p):
 
 
 def ngradient(fun, x, h=1e-3):
+    from sympy import Symbol
     # Computes the derivative of a function with numerical differentiation.
     # Input:
     # fun - function for which the gradient is computed
@@ -313,6 +364,23 @@ def ngradient(fun, x, h=1e-3):
     # TODO: Implement the  computation of the partial derivatives of
     # the function at x with numerical differentiation.
     # g[k] should store the partial derivative w.r.t. the k-th parameter
+    length_x = len(x)
+
+    if (length_x == 1):
+        counter = fun(x[0]+h/2)-fun(x[0]-h/2)
+        g = counter/h
+    else:  #several partial derivatives
+        g = (np.zeros((1,length_x)))
+        for i in range(length_x):
+            inputparameters_1 = x
+            inputparameters_2 = x
+            par_choice_1 = x[i]+h/2
+            par_choice_2 = x[i]-h/2
+            inputparameters_1[i] = par_choice_1
+            inputparameters_2[i] = par_choice_2
+            counter = np.subtract(fun(inputparameters_1),fun(inputparameters_2))
+            g[0,i] = (counter/h)  
+    print(g)
     #------------------------------------------------------------------#
 
     return g
@@ -330,7 +398,7 @@ def rigid_corr(I, Im, x):
     # Output:
     # C - normalized cross-correlation between I and T(Im)
     # Im_t - transformed moving image T(Im)
-
+    
     SCALING = 100
 
     # the first element is the rotation angle
@@ -374,9 +442,14 @@ def affine_corr(I, Im, x):
 
     NUM_BINS = 64
     SCALING = 100
-
     #------------------------------------------------------------------#
-    # TODO: Implement the missing functionality
+    T = rotate(x[0])
+    S = scale(x[1],x[2]).dot(T)
+    Sh = shear(x[3],x[4]).dot(S)
+    Th = util.t2h(Sh, np.array(x[5:])*SCALING)
+    Im_t, Xt = image_transform(Im, Th)
+    plt.imshow(Im_t)
+    C = correlation(Im, Im_t)
     #------------------------------------------------------------------#
 
     return C, Im_t, Th
@@ -401,7 +474,17 @@ def affine_mi(I, Im, x):
     SCALING = 100
     
     #------------------------------------------------------------------#
-    # TODO: Implement the missing functionality
+    T = rotate(x[0])
+    S = scale(x[1],x[2]).dot(T)
+    Sh = shear(x[3],x[4]).dot(S)
+
+    Th = util.t2h(T, np.array(x[5:])*SCALING)
+
+    Im_t, Xt = image_transform(Im, Th)
+    C = correlation(I, Im_t)
+    p = joint_histogram(I, Im, NUM_BINS)
+    MI = mutual_information(p)
+    plt.imshow(Im_t)
     #------------------------------------------------------------------#
 
     return MI, Im_t, Th

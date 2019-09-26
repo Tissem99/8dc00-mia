@@ -79,6 +79,7 @@ def arbitrary_rotation():
 
     #------------------------------------------------------------------#
     # TODO: TODO: Perform rotation of the test shape around the first vertex
+    T = np.array([[np.cos(phi),-np.sin(phi)],[np.sin(phi),np.cos(phi)]])
     #------------------------------------------------------------------#
 
     X_rot = T.dot(Xh)
@@ -136,7 +137,11 @@ def ls_solve_test():
     #------------------------------------------------------------------#
     # TODO: Test your implementation of the ls_solve definition
     # remove the 'pass' once implemented
-    pass
+    A = np.array([[3,4],[5,6],[7,8],[17,10]])
+    c = np.array([1, 2, 3, 4])
+    b = c.reshape(-1,1)
+    w = reg.ls_solve(A, b)
+    return w
     #------------------------------------------------------------------#
 
 
@@ -151,7 +156,7 @@ def ls_affine_test():
     T_scale = reg.scale(1.2, 0.9)
     T_shear = reg.shear(0.2, 0.1)
 
-    T = util.t2h(T_rot.dot(T_scale).dot(T_shear), [10, 20])
+    T = util.t2h(T_rot.dot(T_scale).dot(T_shear), np.array([10, 20]))
 
     Xm = T.dot(Xh)
 
@@ -206,7 +211,19 @@ def mutual_information_test():
     MI1 = reg.mutual_information(p1)
 
     #------------------------------------------------------------------#
-    # TODO: Implement a few tests of the mutual_information definition
+    random1 = np.random.randint(255, size = (512,512))
+    random2 = np.random.randint(255, size = (512,512))
+
+    p2 = reg.joint_histogram(random1,random2)
+
+    MI2 = reg.mutual_information(p2)
+
+    bound1 = MI2<10e-4
+
+    bound2 = MI2>-10e-4
+
+    assert (bound1 == True and bound2 ==True), "The mutual information implementation is wrong"
+    print(MI2)
     #------------------------------------------------------------------#
 
     print('Test successful!')
@@ -234,11 +251,11 @@ def ngradient_test():
 
     # NOTE: test function not strictly scalar-valued
     exponential = lambda x: np.exp(x)
-    g1 = reg.ngradient(exponential, np.ones((1,)))
+    g1 = reg.ngradient(exponential, np.ones((1,))) 
     assert abs(g1 - exponential(1)) < 1e-5, "Numerical gradient is incorrectly implemented (exponential test)"
 
     #------------------------------------------------------------------#
-    # TODO: Implement a few more test cases of ngradient
+    assert g1 != exponential(np.ones((1,))), "Numerical gradient is incorrectly implemented (exponential test)"
     #------------------------------------------------------------------#
 
     print('Test successful!')
@@ -315,3 +332,9 @@ def registration_metrics_demo(use_t2=False):
         im2.set_data(J)
 
         display(fig)
+        
+def affine_corr_test():
+    I = plt.imread('../data/cameraman.tif')
+    Im = plt.imread('../data/cameraman.tif')
+    x = [np.pi/4,3,4, 10/100, 20/100]
+    reg.affine_corr(I, Im, x)
